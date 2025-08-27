@@ -1,24 +1,27 @@
-import { getQueryClient, trpc } from "@/trpc/router/server"
-import { dehydrate, HydrationBoundary } from "@tanstack/react-query"
-import { Suspense } from "react";
-import { Client } from "./api/trpc/[trpc]/client";
+"use client"
+import {toast} from "sonner"
+import { Button } from "@/components/ui/button";
+import { useTRPC } from "@/trpc/router/client";
+import { useMutation } from "@tanstack/react-query";
+import { Input } from "@/components/ui/input";
+import {useState} from "react"
 
-// This component will show the loading state
-function Loading() {
-  return <p>Loading...</p>;
-}
+const Page = () => {
+  const [value, setValue] = useState("");
+  const trpc = useTRPC();
+  const invoke = useMutation(trpc.invoke.mutationOptions({
+    onSuccess:()=>{
+      toast.success("background job is started")
+    }
+  }))
 
-export default async function Page() {
-  const queryClient = getQueryClient();
   
-  // Prefetch the data
-  await queryClient.prefetchQuery(trpc.CreateAI.queryOptions({ text: "World" }));
-  const text = "World";
   return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
-      <Suspense fallback={<Loading />}>
-        <Client text={text} />
-      </Suspense>
-    </HydrationBoundary>
+    <div className="p-4 max-w-7xl mx-auto">
+    <Input value={value} onChange={(e)=>setValue(e.target.value)}></Input>
+    <Button disabled={invoke.isPending} onClick={() => invoke.mutate({text:value,value:value })}>Invoke</Button>
+    Invoke Background Job
+    </div>
   )
 }
+export default Page;
