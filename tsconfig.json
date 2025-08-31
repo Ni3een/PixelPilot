@@ -1,10 +1,11 @@
 {
   "compilerOptions": {
-    "target": "ES2017",
+    "target": "ES2022", // ⬅️ Changed from ES2017 to ES2022
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
+    "strictNullChecks": true, // ⬅️ Added explicitly
     "noEmit": true,
     "esModuleInterop": true,
     "module": "esnext",
